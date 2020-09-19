@@ -133,5 +133,6 @@ dmypy.json
 .vscode
 
 # other stuff
-техническое задание.txt
+Техническое задание.txt
+configs.py
 
