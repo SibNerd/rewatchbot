@@ -6,10 +6,12 @@ class ToWatchlist(StatesGroup):
 
 class ToWatched(StatesGroup):
     add_name_and_type = State()
+    ask_rate_and_note = State()
     add_rate = State()
     add_note = State()
 
 class ChangeRateNote(StatesGroup):
+    get_name_and_name = State()
     change_rate = State()
     change_note = State()
 
