@@ -1,8 +1,10 @@
-from create_bot import dp
+from aiogram.dispatcher.filters import Text
+from aiogram.dispatcher import FSMContext
 from aiogram import types
+from create_bot import dp
 import texts
 import db_sessions
-from aiogram.dispatcher.filters import Text
+
 
 
 @dp.message_handler(commands=['start'])
@@ -22,5 +24,10 @@ async def send_help_message(message: types.Message):
 
 
 @dp.message_handler(Text(equals=['cansel', 'отмена'], ignore_case=True), state='*')
-async def cansel_operation(message: types.Message):
-    pass
+async def cansel_operation(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.answer('Отмена команды.')
+
