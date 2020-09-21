@@ -21,24 +21,63 @@ async def add_new_user(new_user_id, name):
 
 
 async def add_show(user_id, user_message):
-    show_name, show_type = re.split(r', ', user_message)
+    show_name, show_type = re.split(r'\n', user_message)
     async with Database(DATABASE_URL) as db:
         query = "INSERT INTO shows(user_id, name, type) VALUES(:user_id, :name, :type)"
-        values = {'user_id': user_id, 'name': show_name, 'type': show_type}
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
         result = await db.execute(query=query, values=values)
         
 
 
-async def add_to_watched(id, message):
-            pass
+async def add_to_watched(user_id, user_message):
+    show_name, show_type = re.split(r'\n', user_message)
+    async with Database(DATABASE_URL) as db:
+        query = "SELECT * FROM shows WHERE user_id = :user_id AND name = :name AND type = :type"
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
+        result = await db.execute(query=query, values=values)
+        if not result:
+            query = "INSERT INTO shows(user_id, name, type, is_watched) VALUES(:user_id, :name, :type, is_watched = :is_watched)"
+            values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
+        else:
+            query = "UPDATE shows SET is_watched = :is_watched WHERE user_id = :user_id AND name = :name AND type = :type"
+            values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
+        await db.execute(query=query, values=values)
+        
+
+
+async def add_rate(user_id, name_type, rate):
+    show_name, show_type = re.split(r'\n', name_type)
+    async with Database(DATABASE_URL) as db:
+        query = 'UPDATE shows SET rate = :rate WHERE user_id = :user_id AND name = :name AND type = :type'
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'rate': rate}
+        result = await db.execute(query=query, values=values)
+    
+
+
+async def add_note(user_id, name_type, note):
+    show_name, show_type = re.split(r'\n', name_type)
+    async with Database(DATABASE_URL) as db:
+        query = 'UPDATE shows SET note = :note WHERE user_id = :user_id AND name = :name AND type = :type'
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'note': note}
+        result = await db.execute(query=query, values=values)
 
 
 
-async def get_show_rate(id, name):
-            pass
+async def get_show_rate(user_id, user_message):
+    show_name, show_type = re.split(r'\n', user_message)
+    async with Database(DATABASE_URL) as db:
+        query = 'SELECT rate FROM shows WHERE user_id = :user_id AND name = :name AND type = :type'
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
+        result = await db.execute(query=query, values=values)
+        return result
 
 
 
-async def get_show_notes(id, name):
-            pass
+async def get_show_notes(user_id, user_message):
+    show_name, show_type = re.split(r'\n', user_message)
+    async with Database(DATABASE_URL) as db:
+        query = 'SELECT note FROM shows WHERE user_id = :user_id AND name = :name AND type = :type'
+        values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
+        result = await db.execute(query=query, values=values)
+        return result
 
