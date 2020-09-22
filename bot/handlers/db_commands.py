@@ -5,7 +5,7 @@ from aiogram.dispatcher.filters import Text
 import texts
 import db_sessions
 from create_bot import dp
-
+import re
 
 
 @dp.message_handler(commands=['to_watchlist'], state='*')
@@ -15,9 +15,14 @@ async def add_to_watchlist_setup(message: types.Message):
 
 @dp.message_handler(state=ToWatchlist.add_name_and_type, content_types=types.ContentTypes.TEXT)
 async def add_to_watchlist_main(message: types.Message, state: FSMContext):
-    await db_sessions.add_show(message.chat.id, message.text)
-    await message.answer(f'Шоу было добавлено в ваш список.')
-    await state.finish()
+    user_data = re.split(r'\n', message.text)
+    if len(user_data) == 2:
+        await db_sessions.add_show(message.chat.id, message.text)
+        await message.answer('Шоу было добавлено в ваш список.')
+        await state.finish()
+    else:
+        await message.answer(texts.TO_WATCHLIST_INFO)
+        return
 
 
     
@@ -28,10 +33,15 @@ async def add_to_watched_setup(message: types.Message):
 
 @dp.message_handler(state=ToWatched.add_name_and_type, content_types=types.ContentTypes.TEXT)
 async def add_to_watched_nametype(message: types.Message, state: FSMContext):
-    await db_sessions.add_to_watched(message.chat.id, message.text)
-    await state.update_data(show_name_type=message.text)
-    await ToWatched.next()
-    await message.answer(texts.TO_WATCHED_INFO_RATE_NOTE)
+    user_data = re.split('\n', message.text)
+    if len(user_data) == 2:
+        await db_sessions.add_to_watched(message.chat.id, message.text)
+        await state.update_data(show_name_type=message.text)
+        await ToWatched.next()
+        await message.answer(texts.TO_WATCHED_INFO_RATE_NOTE)
+    else:
+        await message.answer('Пожалуйста, напишите тип шоу следующей строкой.')
+        return
 
 @dp.message_handler(state=ToWatched.ask_rate_and_note, content_types=types.ContentTypes.TEXT)
 async def add_to_watched_ratenote(message: types.Message, state: FSMContext):
@@ -54,15 +64,18 @@ async def add_to_watched_rate(message: types.Message, state: FSMContext):
         if rate in range(1, 6):
             await db_sessions.add_rate(message.chat.id, user_data['show_name_type'], rate)
             await ToWatched.next()
-            await message.answer(texts.TO_WATCHED_INFO_NOTE)            
+            await message.answer(texts.TO_WATCHED_INFO_NOTE)
+        else:
+            await message.answer('Пожалуйста, введите число от 1 до 5.')   
+            return         
     except ValueError:
         user_answer = message.text.lower()
         if user_answer == 'далее':
             await ToWatched.next()
-            await message.answer(texts.TO_WATCHED_INFO_NOTE)  
-    except:
-        await message.answer('Пожалуйста, введите число от 1 до 5.')
-        return
+            await message.answer(texts.TO_WATCHED_INFO_NOTE)
+        else:
+            await message.answer('Пожалуйста, введите число от 1 до 5.')
+            return
             
 @dp.message_handler(state=ToWatched.add_note, content_types=types.ContentTypes.TEXT)
 async def add_to_watched_note(message: types.Message, state: FSMContext):
