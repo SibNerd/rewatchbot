@@ -15,4 +15,10 @@ class ChangeRateNote(StatesGroup):
     change_rate = State()
     change_note = State()
 
+class GetRate(StatesGroup):
+    get_rate = State()
+
+class GetNote(StatesGroup):
+    get_note = State()
+
 
