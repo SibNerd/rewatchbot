@@ -8,6 +8,9 @@ from create_bot import dp
 import re
 
 
+
+# Добавить шоу в список "Хочу посмотреть"
+
 @dp.message_handler(commands=['to_watchlist'], state='*')
 async def add_to_watchlist_setup(message: types.Message):
     await message.answer(texts.INFO_SETUP)
@@ -25,7 +28,9 @@ async def add_to_watchlist_main(message: types.Message, state: FSMContext):
         return
 
 
-    
+
+# Добавить шоу в список просмотренного
+
 @dp.message_handler(commands=['watched'], state='*')
 async def add_to_watched_setup(message: types.Message):
     await message.answer(texts.INFO_SETUP)
@@ -89,6 +94,8 @@ async def add_to_watched_note(message: types.Message, state: FSMContext):
 
 
 
+# Получить заметку о шоу
+
 @dp.message_handler(commands=['get_note'], state='*')
 async def get_show_note_setup(message: types.Message):
     await message.answer(texts.INFO_SETUP)
@@ -106,17 +113,19 @@ async def get_show_note(message: types.Message, state: FSMContext):
 
 
 
+# получить рейтинг шоу
+
 @dp.message_handler(commands=['get_rate'], state="*")
 async def get_show_rate_setup(message: types.Message):
     await message.answer(texts.INFO_SETUP)
     await GetRate.get_rate.set()
 
 @dp.message_handler(state=GetRate.get_rate, content_types=types.ContentTypes.TEXT)
-async def get_show_rate(message: types.Message, state: FSMContext):
+async def get_show_average_rate(message: types.Message, state: FSMContext):
     user_data = re.split(r'\n', message.text)
     if len(user_data) == 2:
         rate = await db_sessions.get_show_rate(message.chat.id, user_data)
-        await message.answer(rate)
+        await message.answer('Средний рейтинг: ', rate)
         await state.finish()
     else:
         await message.answer(texts.INFO_SETUP)
