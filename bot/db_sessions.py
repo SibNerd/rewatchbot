@@ -75,6 +75,25 @@ async def get_show_rate(user_id, user_message):
 
 
 
+async def get_show_average_rate(user_id, user_message):
+    show_name, show_type = user_message
+    async with Database(DATABASE_URL) as db:
+        query = 'SELECT rate FROM shows WHERE name = :name AND type = :type'
+        values = {'name': show_name, 'type': show_type}
+        result = db.fetch_all(query=query, values=values)
+        if not result:
+            arate = 'У данного шоу нет оценок.'
+        elif len(result)>1:
+            arate = 0
+            for i in result:
+                arate += i
+            arate = int(arate/len(result))
+        else:
+            arate = result[0]
+        return arate
+
+
+
 async def get_show_note(user_id, user_message):
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
