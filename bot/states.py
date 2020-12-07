@@ -1,4 +1,9 @@
+"""
+Module for different states.
+"""
+
 from aiogram.dispatcher.filters.state import State, StatesGroup
+
 
 
 class ToWatchlist(StatesGroup):

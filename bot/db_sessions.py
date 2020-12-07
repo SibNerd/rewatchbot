@@ -1,4 +1,7 @@
-# from shemas import User, Shows
+    """
+    Module with bot functions.
+    """
+
 from databases import Database
 from configs import DATABASE_URL
 from db import users, shows
@@ -7,6 +10,15 @@ import re
 
 
 async def add_new_user(new_user_id, name):
+    """ Checks, if given user exists in Database, and if not, add new one.
+
+    Args:
+        new_user_id (int): user Telegram ID
+        name (str): user Telegram Name
+
+    Returns:
+        bool: True if user was added to DB, False otherwise
+    """
     async with Database(DATABASE_URL) as db:
         query = "SELECT * FROM users WHERE user_id = :user_id"
         result = await db.fetch_one(query=query, values={'user_id': new_user_id})
@@ -21,6 +33,12 @@ async def add_new_user(new_user_id, name):
 
 
 async def add_show(user_id, user_message):
+    """Adds new show to DB for chosen User with 'Seen' set to 'False'.
+
+    Args:
+        user_id (int): User Telegram ID
+        user_message (str): Name and Type of the show
+    """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
         query = "INSERT INTO shows(user_id, name, type) VALUES(:user_id, :name, :type)"
@@ -30,6 +48,12 @@ async def add_show(user_id, user_message):
 
 
 async def add_to_watched(user_id, user_message):
+    """Adds show to DB for chosen User with 'Seen' set to 'True'
+
+    Args:
+        user_id (int): User Telegram ID
+        user_message (str): Name and Type of the show
+    """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
         query = "SELECT * FROM shows WHERE user_id = :user_id AND name = :name AND type = :type"
@@ -46,6 +70,13 @@ async def add_to_watched(user_id, user_message):
 
 
 async def add_show_rate(user_id, name_type, rate):
+    """Adds User's rate for chosen Show
+
+    Args:
+        user_id (int): User Telegram ID
+        name_type (str): Name and Type of the show
+        rate (int): Rate of the show
+    """
     show_name, show_type = name_type
     async with Database(DATABASE_URL) as db:
         query = 'UPDATE shows SET rate = :rate WHERE user_id = :user_id AND name = :name AND type = :type'
@@ -55,6 +86,13 @@ async def add_show_rate(user_id, name_type, rate):
 
 
 async def add_show_note(user_id, name_type, note):
+    """Adds User's note for chosen show
+
+    Args:
+        user_id (int): User Telegram ID
+        name_type (str): Name and Type of the show
+        note (str): Note for the show
+    """
     show_name, show_type = name_type
     async with Database(DATABASE_URL) as db:
         query = 'UPDATE shows SET note = :note WHERE user_id = :user_id AND name = :name AND type = :type'
@@ -64,6 +102,15 @@ async def add_show_note(user_id, name_type, note):
 
 
 async def get_show_rate(user_id, user_message):
+    """Gets User's rate of the chosen show
+
+    Args:
+        user_id (int): User Telegram ID
+        user_message (str): Name and Type of the show
+
+    Returns:
+        result: rate of the chosen show of chosen User or text, that chosen show doesn't have a rate
+    """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
         query = 'SELECT rate FROM shows WHERE user_id = :user_id AND name = :name AND type = :type'
@@ -75,7 +122,15 @@ async def get_show_rate(user_id, user_message):
 
 
 
-async def get_show_average_rate(user_id, user_message):
+async def get_show_average_rate(user_message):
+    """Gets average rate of the chosen show
+
+    Args:
+        user_message (str): Name and Type of the show
+
+    Returns:
+        arate: average rate of the show or text, that chosen show doesn't have any rates.
+    """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
         query = 'SELECT rate FROM shows WHERE name = :name AND type = :type'
@@ -95,6 +150,15 @@ async def get_show_average_rate(user_id, user_message):
 
 
 async def get_show_note(user_id, user_message):
+    """ Gets User's Note of the chosen show
+
+    Args:
+        user_id (int): User Telegram ID
+        user_message (str): Name and Type of the Show
+
+    Returns:
+        result: User's note
+    """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
         query = 'SELECT note FROM shows WHERE user_id = :user_id AND name = :name AND type = :type'

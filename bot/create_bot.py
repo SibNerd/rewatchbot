@@ -1,3 +1,7 @@
+    """
+    Initiates Telegram Bot.
+    """
+
 import logging
 from configs import TOKEN
 from aiogram import Bot, Dispatcher

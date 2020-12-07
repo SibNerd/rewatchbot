@@ -1,3 +1,7 @@
+    """
+    Creates Database with two tables: Users and Shows.
+    """
+
 import sqlalchemy as sa
 from sqlalchemy import (
     Table, MetaData, ForeignKey, Column, Integer, Boolean, String, Text, DateTime
