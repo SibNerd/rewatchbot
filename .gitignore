@@ -135,4 +135,4 @@ dmypy.json
 # other stuff
 Техническое задание.txt
 configs.py
-
+/.db
