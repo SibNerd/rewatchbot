@@ -1,6 +1,6 @@
-    """
-    Module with bot functions.
-    """
+"""
+Module with bot functions.
+"""
 
 from databases import Database
 from configs import DATABASE_URL

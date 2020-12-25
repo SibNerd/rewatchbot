@@ -1,6 +1,6 @@
-    """
-    Creates Database with two tables: Users and Shows.
-    """
+"""
+Creates Database with two tables: Users and Shows.
+"""
 
 import sqlalchemy as sa
 from sqlalchemy import (

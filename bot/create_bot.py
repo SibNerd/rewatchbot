@@ -1,6 +1,6 @@
-    """
-    Initiates Telegram Bot.
-    """
+"""
+Initiates Telegram Bot.
+"""
 
 import logging
 import os
