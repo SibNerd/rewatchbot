@@ -62,13 +62,32 @@ async def add_to_watched(user_id, user_message):
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
         result = await db.execute(query=query, values=values)
         if not result:
-            query = "INSERT INTO shows(user_id, name, type, is_watched) VALUES(:user_id, :name, :type, is_watched = :is_watched)"
+            query = "INSERT INTO shows(user_id, name, type, is_watched) VALUES(:user_id, :name, :type, :is_watched)"
             values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
         else:
             query = "UPDATE shows SET is_watched = :is_watched WHERE user_id = :user_id AND name = :name AND type = :type"
             values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
         await db.execute(query=query, values=values)
         
+
+
+async def get_watchlist(user_id):
+    """Gets User's watchlist
+
+    Args:
+        user_id (int): User's Telegram ID
+
+    Returns:
+        list[str]: list of all shows in User's watchlist
+    """
+    async with Database(DATABASE_URL) as db:
+        query = 'SELECT title, type FROM shows WHERE user_id = :user_id AND is_watched = :is_watched'
+        values = {'user_id': user_id, 'is_watched': False}
+        result = await db.execute(query=query, values=values)
+        if not result:
+            result = 'Ваш список желаемого к просмотру пуст.'
+        return result
+
 
 
 async def add_show_rate(user_id, name_type, rate):

@@ -3,6 +3,7 @@ Module for complex commands, uses finite states for user's input handling.
 """
 
 from aiogram import types
+from aiogram.dispatcher.filters.builtin import Command
 from states import ToWatchlist, ToWatched, GetRate, GetNote
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -30,6 +31,15 @@ async def add_to_watchlist_main(message: types.Message, state: FSMContext):
     else:
         await message.answer(texts.INFO_SETUP)
         return
+
+
+
+# Вывести список "Хочу посмотреть"
+
+@dp.message_handler(commands=['watchlist'], state='*')
+async def get_watchlist(message: types.Message):
+    watchlist = await db_sessions.get_watchlist(message.chat.id)
+    await message.answer(watchlist)
 
 
 
