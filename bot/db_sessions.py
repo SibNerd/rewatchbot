@@ -45,7 +45,7 @@ async def add_show(user_id, user_message):
     async with Database(DATABASE_URL) as db:
         query = "INSERT INTO shows(user_id, name, type) VALUES(:user_id, :name, :type)"
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
-        result = await db.execute(query=query, values=values)
+        await db.execute(query=query, values=values)
         
 
 
@@ -102,7 +102,7 @@ async def add_show_rate(user_id, name_type, rate):
     async with Database(DATABASE_URL) as db:
         query = 'UPDATE shows SET rate = :rate WHERE user_id = :user_id AND name = :name AND type = :type'
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'rate': rate}
-        result = await db.execute(query=query, values=values)
+        await db.execute(query=query, values=values)
     
 
 
@@ -118,7 +118,7 @@ async def add_show_note(user_id, name_type, note):
     async with Database(DATABASE_URL) as db:
         query = 'UPDATE shows SET note = :note WHERE user_id = :user_id AND name = :name AND type = :type'
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'note': note}
-        result = await db.execute(query=query, values=values)
+        await db.execute(query=query, values=values)
 
 
 
