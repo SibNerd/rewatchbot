@@ -33,7 +33,7 @@ async def send_help_message(message: types.Message):
 
 
 
-@dp.message_handler(Text(equals=['cansel', 'отмена'], ignore_case=True), state='*')
+@dp.message_handler(Text(equals=['cancel', 'отмена'], ignore_case=True), state='*')
 async def cansel_operation(message: types.Message, state: FSMContext):
     """ Cansels current command.
     """
