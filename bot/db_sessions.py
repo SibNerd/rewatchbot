@@ -3,9 +3,11 @@ Module with bot functions.
 """
 
 from databases import Database
-from configs import DATABASE_URL
 from db import users, shows
 import re
+import os
+
+DATABASE_URL = os.environ['DATABASE_URL']
 
 
 
