@@ -43,7 +43,7 @@ async def add_show(user_id, user_message):
     """
     show_name, show_type = user_message
     async with Database(DATABASE_URL) as db:
-        query = "INSERT INTO shows(user_id, name, type) VALUES(:user_id, :name, :type)"
+        query = shows.insert()
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
         await db.execute(query=query, values=values)
         
@@ -62,7 +62,7 @@ async def add_to_watched(user_id, user_message):
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
         result = await db.execute(query=query, values=values)
         if not result:
-            query = "INSERT INTO shows(user_id, name, type, is_watched) VALUES(:user_id, :name, :type, :is_watched)"
+            query = shows.insert()
             values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
         else:
             query = "UPDATE shows SET is_watched = :is_watched WHERE user_id = :user_id AND name = :name AND type = :type"
