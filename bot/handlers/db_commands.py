@@ -81,7 +81,7 @@ async def add_to_watched_rate(message: types.Message, state: FSMContext):
     try:
         rate = int(message.text)
         if rate in range(1, 6):
-            await db_sessions.add_rate(message.chat.id, user_data['show_name_type'], rate)
+            await db_sessions.add_show_rate(message.chat.id, user_data['show_name_type'], rate)
             await ToWatched.next()
             await message.answer(texts.TO_WATCHED_INFO_NOTE)
         else:
@@ -102,7 +102,7 @@ async def add_to_watched_note(message: types.Message, state: FSMContext):
     if message.text.lower() == 'конец':
         await state.finish()
     else:
-        await db_sessions.add_note(message.chat.id, user_data['show_name_type'], message.text)
+        await db_sessions.add_show_note(message.chat.id, user_data['show_name_type'], message.text)
         await state.finish()
     await message.answer('Шоу было добавлено в просмотренные.')
 
