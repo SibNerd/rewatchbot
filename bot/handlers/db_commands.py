@@ -1,6 +1,6 @@
-    """
-    Module for complex commands, uses finite states for user's input handling.
-    """
+"""
+Module for complex commands, uses finite states for user's input handling.
+"""
 
 from aiogram import types
 from states import ToWatchlist, ToWatched, GetRate, GetNote

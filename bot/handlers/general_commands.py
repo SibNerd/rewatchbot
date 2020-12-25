@@ -1,6 +1,6 @@
-    """
-    Module for functions, working with general comands.
-    """
+"""
+Module for functions, working with general comands.
+"""
 
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
