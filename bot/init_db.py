@@ -1,8 +1,8 @@
+import os
 from sqlalchemy import create_engine, MetaData
 from db import users, shows
-from configs import DATABASE_URL as db_url
 
-database = db_url
+database = os.environ['DATABASE_URL']
 
 def create_tables(engine):
     meta = MetaData()
