@@ -60,7 +60,7 @@ async def add_to_watched(user_id, user_message):
     async with Database(DATABASE_URL) as db:
         query = "SELECT * FROM shows WHERE user_id = :user_id AND name = :name AND type = :type"
         values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type}
-        result = await db.execute(query=query, values=values)
+        result = await db.fetch_one(query=query, values=values)
         if not result:
             query = shows.insert()
             values = {'user_id': user_id, 'name': show_name.lower(), 'type': show_type, 'is_watched': True}
@@ -83,7 +83,7 @@ async def get_watchlist(user_id):
     async with Database(DATABASE_URL) as db:
         query = 'SELECT name, type FROM shows WHERE user_id = :user_id AND is_watched = :is_watched'
         values = {'user_id': user_id, 'is_watched': False}
-        result = await db.execute(query=query, values=values)
+        result = await db.fetch_all(query=query, values=values)
         if not result:
             result = 'Ваш список желаемого к просмотру пуст.'
         return result
