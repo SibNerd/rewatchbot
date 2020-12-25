@@ -81,7 +81,7 @@ async def get_watchlist(user_id):
         list[str]: list of all shows in User's watchlist
     """
     async with Database(DATABASE_URL) as db:
-        query = 'SELECT title, type FROM shows WHERE user_id = :user_id AND is_watched = :is_watched'
+        query = 'SELECT name, type FROM shows WHERE user_id = :user_id AND is_watched = :is_watched'
         values = {'user_id': user_id, 'is_watched': False}
         result = await db.execute(query=query, values=values)
         if not result:
