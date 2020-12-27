@@ -20,7 +20,7 @@ shows = Table(
     Column('user_id', Integer, ForeignKey('users.user_id', ondelete="CASCADE")),
     Column('name', String, nullable=False),
     Column('type', String, nullable=False),
-    Column('is_watched', Boolean, default=False),
+    Column('is_watched', Boolean, nullable=False),
     Column('rate', Integer, default=None),
     Column('note', Text, default=None)
     )
